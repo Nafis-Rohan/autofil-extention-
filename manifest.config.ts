@@ -9,4 +9,5 @@ export default defineManifest({
   action: {
     default_popup: 'src/popup/index.html',
   },
+  options_page: 'src/options/index.html',
 })

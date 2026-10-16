@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Job Autofill - Profile</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 520px;
+        margin: 24px auto;
+      }
+      label {
+        display: block;
+        margin: 10px 0 2px;
+        font-size: 13px;
+      }
+      input {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+      button {
+        margin-top: 16px;
+        padding: 8px 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Personal info</h2>
+    <label>First name</label><input data-path="personal.firstName" />
+    <label>Last name</label><input data-path="personal.lastName" />
+    <label>Email</label><input data-path="personal.email" /> <label>Phone</label
+    ><input data-path="personal.phone" placeholder="+8801XXXXXXXXX" />
+    <label>Date of birth</label
+    ><input data-path="personal.dateOfBirth" placeholder="YYYY-MM-DD" />
+    <label>Gender</label><input data-path="personal.gender" />
+    <label>Nationality</label><input data-path="personal.nationality" />
+    <label>Address</label><input data-path="personal.address" />
+    <label>City</label><input data-path="personal.city" />
+    <label>Postal code</label><input data-path="personal.postalCode" />
+    <label>Country</label><input data-path="personal.country" />
+
+    <h2>Links</h2>
+    <label>LinkedIn</label><input data-path="links.linkedin" />
+    <label>GitHub</label><input data-path="links.github" />
+    <label>Portfolio</label><input data-path="links.portfolio" />
+    <label>LeetCode</label><input data-path="links.leetcode" />
+
+    <button id="save">Save</button>
+    <span id="status"></span>
+    <script type="module" src="./options.ts"></script>
+  </body>
+</html>
