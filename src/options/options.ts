@@ -1,4 +1,4 @@
-import { getProfile, saveProfile } from '../storage'
+import { getProfile, saveProfile, getSkills, saveSkills } from '../storage'
 
 type Field = HTMLInputElement | HTMLSelectElement
 
@@ -37,8 +37,45 @@ document.getElementById('save')!.addEventListener('click', async () => {
     else setByPath(profile, path, f.value.trim())
   })
   await saveProfile(profile)
+  await saveSkills(skills)
   status.textContent = 'Saved ✅'
   setTimeout(() => (status.textContent = ''), 2000)
 })
 
+// ---- Skills ----
+let skills: Record<string, number> = {}
+const skillsDiv = document.getElementById('skills')!
+
+function renderSkills() {
+  skillsDiv.innerHTML = ''
+  Object.entries(skills).forEach(([name, years]) => {
+    const row = document.createElement('div')
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin:4px 0'
+    row.innerHTML = `<span style="flex:1"></span><span>${years} yr</span><button type="button" style="margin:0">Remove</button>`
+    row.querySelector('span')!.textContent = name
+    row.querySelector('button')!.addEventListener('click', () => {
+      delete skills[name]
+      renderSkills()
+    })
+    skillsDiv.appendChild(row)
+  })
+}
+
+document.getElementById('add-skill')!.addEventListener('click', () => {
+  const nameEl = document.getElementById('new-skill') as HTMLInputElement
+  const yearsEl = document.getElementById('new-years') as HTMLInputElement
+  const name = nameEl.value.trim()
+  if (!name) return
+  skills[name] = Number(yearsEl.value) || 0
+  nameEl.value = ''
+  yearsEl.value = ''
+  renderSkills()
+})
+
+async function loadSkills() {
+  skills = await getSkills()
+  renderSkills()
+}
+
 load()
+loadSkills()

@@ -106,6 +106,25 @@
       visa sponsorship</label
     >
 
+    <h2>Skills (years of experience)</h2>
+    <p style="font-size: 12px; color: #666">
+      Used to answer "X+ years of Y?" questions. Use 0 for skills you haven't
+      used.
+    </p>
+    <div id="skills"></div>
+    <div style="display: flex; gap: 8px; margin-top: 8px">
+      <input id="new-skill" placeholder="Skill name, e.g. Spring Boot" />
+      <input
+        id="new-years"
+        type="number"
+        min="0"
+        step="0.5"
+        placeholder="Years"
+        style="width: 90px"
+      />
+      <button id="add-skill" type="button" style="margin: 0">Add</button>
+    </div>
+
     <button id="save">Save</button>
     <span id="status"></span>
     <script type="module" src="./options.ts"></script>
