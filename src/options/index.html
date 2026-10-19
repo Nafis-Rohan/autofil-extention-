@@ -14,10 +14,14 @@
         margin: 10px 0 2px;
         font-size: 13px;
       }
-      input {
+      input,
+      select {
         width: 100%;
         padding: 6px;
         box-sizing: border-box;
+      }
+      input[type="checkbox"] {
+        width: auto;
       }
       button {
         margin-top: 16px;
@@ -45,6 +49,62 @@
     <label>GitHub</label><input data-path="links.github" />
     <label>Portfolio</label><input data-path="links.portfolio" />
     <label>LeetCode</label><input data-path="links.leetcode" />
+
+    <h2>Education</h2>
+    <label>University</label><input data-path="education.university" />
+    <label>Degree</label><input data-path="education.degree" />
+    <label>Major</label><input data-path="education.major" /> <label>CGPA</label
+    ><input data-path="education.cgpa" /> <label>CGPA scale</label
+    ><input data-path="education.cgpaScale" placeholder="4.00" />
+    <label>Start year</label><input data-path="education.startYear" />
+    <label>Graduation year</label><input data-path="education.graduationYear" />
+
+    <h3>HSC</h3>
+    <label>Board</label><input data-path="education.hsc.board" />
+    <label>Passing year</label><input data-path="education.hsc.year" />
+    <label>GPA</label><input data-path="education.hsc.gpa" />
+
+    <h3>SSC</h3>
+    <label>Board</label><input data-path="education.ssc.board" />
+    <label>Passing year</label><input data-path="education.ssc.year" />
+    <label>GPA</label><input data-path="education.ssc.gpa" />
+
+    <h2>Experience</h2>
+    <label>Current company</label
+    ><input data-path="experience.currentCompany" /> <label>Current title</label
+    ><input data-path="experience.currentTitle" />
+    <label>Total years of experience</label
+    ><input data-path="experience.totalYears" />
+
+    <h2>Preferences</h2>
+    <label>Expected salary</label
+    ><input data-path="preferences.expectedSalary" />
+    <label>Current salary</label><input data-path="preferences.currentSalary" />
+    <label>Notice period</label
+    ><input data-path="preferences.noticePeriod" placeholder="e.g. 30 days" />
+    <label>Work mode</label>
+    <select data-path="preferences.workMode">
+      <option value="">-</option>
+      <option>Remote</option>
+      <option>Hybrid</option>
+      <option>Onsite</option>
+    </select>
+    <label>Job type</label>
+    <select data-path="preferences.jobType">
+      <option value="">-</option>
+      <option>Full-time</option>
+      <option>Part-time</option>
+      <option>Internship</option>
+      <option>Contract</option>
+    </select>
+    <label
+      ><input type="checkbox" data-path="preferences.willingToRelocate" />
+      Willing to relocate</label
+    >
+    <label
+      ><input type="checkbox" data-path="preferences.needSponsorship" /> Need
+      visa sponsorship</label
+    >
 
     <button id="save">Save</button>
     <span id="status"></span>

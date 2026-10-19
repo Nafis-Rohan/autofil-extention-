@@ -1,30 +1,41 @@
 import { getProfile, saveProfile } from '../storage'
 
-function getByPath(obj: Record<string, any>, path: string): string {
-  const value = path.split('.').reduce<any>((o, k) => o?.[k], obj)
-  return value ?? ''
+type Field = HTMLInputElement | HTMLSelectElement
+
+function getByPath(obj: Record<string, any>, path: string): any {
+  return path.split('.').reduce<any>((o, k) => o?.[k], obj)
 }
 
-function setByPath(obj: Record<string, any>, path: string, value: string) {
+function setByPath(obj: Record<string, any>, path: string, value: string | boolean) {
   const keys = path.split('.')
   const last = keys.pop()!
-  const target = keys.reduce((o, k) => o[k], obj)
+  const target = keys.reduce<any>((o, k) => o[k], obj)
   target[last] = value
 }
 
-const inputs = document.querySelectorAll<HTMLInputElement>('[data-path]')
+const fields = document.querySelectorAll<Field>('[data-path]')
 const status = document.getElementById('status')!
+
+function isCheckbox(f: Field): f is HTMLInputElement {
+  return f instanceof HTMLInputElement && f.type === 'checkbox'
+}
 
 async function load() {
   const profile = await getProfile()
-  inputs.forEach((i) => {
-    i.value = getByPath(profile, i.dataset.path!)
+  fields.forEach((f) => {
+    const value = getByPath(profile, f.dataset.path!)
+    if (isCheckbox(f)) f.checked = Boolean(value)
+    else f.value = value ?? ''
   })
 }
 
 document.getElementById('save')!.addEventListener('click', async () => {
   const profile = await getProfile()
-  inputs.forEach((i) => setByPath(profile, i.dataset.path!, i.value.trim()))
+  fields.forEach((f) => {
+    const path = f.dataset.path!
+    if (isCheckbox(f)) setByPath(profile, path, f.checked)
+    else setByPath(profile, path, f.value.trim())
+  })
   await saveProfile(profile)
   status.textContent = 'Saved ✅'
   setTimeout(() => (status.textContent = ''), 2000)
