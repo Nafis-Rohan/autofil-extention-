@@ -35,3 +35,50 @@ export function matchKey(hint: string): FieldKey | null {
   }
   return null
 }
+
+export type FillableEl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+
+function getLabelText(el: FillableEl): string {
+  // 1. <label for="id">
+  if (el.id) {
+    const byFor = document.querySelector(`label[for="${CSS.escape(el.id)}"]`)
+    if (byFor?.textContent) return byFor.textContent
+  }
+  // 2. wrapping <label>
+  const wrap = el.closest('label')
+  if (wrap?.textContent) return wrap.textContent
+  // 3. aria-labelledby
+  const ids = el.getAttribute('aria-labelledby')
+  if (ids) {
+    return ids
+      .split(' ')
+      .map((id) => document.getElementById(id)?.textContent ?? '')
+      .join(' ')
+  }
+  return ''
+}
+
+export function getHint(el: FillableEl): string {
+  return [
+    getLabelText(el),
+    el.getAttribute('name'),
+    el.id,
+    el.getAttribute('placeholder'),
+    el.getAttribute('aria-label'),
+    el.getAttribute('autocomplete'),
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .replace(/[_-]/g, ' ')
+}
+
+export function getFields(root: ParentNode = document): FillableEl[] {
+  const all = root.querySelectorAll<FillableEl>('input, textarea, select')
+  return Array.from(all).filter((el) => {
+    if (el instanceof HTMLInputElement) {
+      const skip = ['hidden', 'submit', 'button', 'password', 'file', 'image', 'reset']
+      if (skip.includes(el.type)) return false
+    }
+    return !el.disabled && el.offsetParent !== null // visible only
+  })
+}
