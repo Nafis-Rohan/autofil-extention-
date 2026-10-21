@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Job Form</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 480px;
+        margin: 24px auto;
+      }
+      label {
+        display: block;
+        margin: 10px 0 2px;
+        font-size: 13px;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Apply: Backend Engineer</h2>
+    <form>
+      <label for="fn">First Name</label>
+      <input id="fn" name="first_name" />
+
+      <label for="ln">Last Name</label>
+      <input id="ln" name="last_name" />
+
+      <label for="em">Email Address</label>
+      <input id="em" name="email" type="email" />
+
+      <label for="ph">Mobile Number</label>
+      <input id="ph" name="phone" type="tel" />
+
+      <label for="li">LinkedIn Profile</label>
+      <input id="li" name="linkedin_url" />
+
+      <label for="gh">GitHub</label>
+      <input id="gh" name="github" placeholder="https://github.com/..." />
+
+      <label for="city">Current City</label>
+      <input id="city" name="city" />
+
+      <label for="uni">University</label>
+      <input id="uni" name="university" />
+
+      <label for="cgpa">CGPA</label>
+      <input id="cgpa" name="cgpa" />
+
+      <label for="cl">Cover Letter</label>
+      <textarea id="cl" name="cover_letter" rows="5"></textarea>
+    </form>
+  </body>
+</html>
