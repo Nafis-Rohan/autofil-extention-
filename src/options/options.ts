@@ -1,4 +1,4 @@
-import { getProfile, saveProfile, getSkills, saveSkills } from '../storage'
+import { getProfile, saveProfile, getSkills, saveSkills, getSnippets, saveSnippets } from '../storage'
 
 type Field = HTMLInputElement | HTMLSelectElement
 
@@ -76,6 +76,43 @@ async function loadSkills() {
   skills = await getSkills()
   renderSkills()
 }
+
+// ---- Backup ----
+document.getElementById('export')!.addEventListener('click', async () => {
+  const data = {
+    profile: await getProfile(),
+    skills: await getSkills(),
+    snippets: await getSnippets(),
+  }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'profile-backup.json'
+  a.click()
+  URL.revokeObjectURL(url)
+})
+
+const importFile = document.getElementById('import-file') as HTMLInputElement
+document.getElementById('import')!.addEventListener('click', () => importFile.click())
+
+importFile.addEventListener('change', async () => {
+  const file = importFile.files?.[0]
+  if (!file) return
+  try {
+    const data = JSON.parse(await file.text())
+    if (!data.profile) throw new Error('No profile in file')
+    await saveProfile(data.profile)
+    await saveSkills(data.skills ?? {})
+    await saveSnippets(data.snippets ?? [])
+    await load()
+    await loadSkills()
+    status.textContent = 'Imported ✅'
+  } catch {
+    status.textContent = 'Invalid file ❌'
+  }
+  importFile.value = ''
+})
 
 load()
 loadSkills()
