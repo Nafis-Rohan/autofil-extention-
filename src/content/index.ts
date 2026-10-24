@@ -2,6 +2,7 @@ import { getProfile } from '../storage'
 import { getFields, getHint, matchKey } from './detect'
 import { fillText, fillSelect } from './fill'
 import { fillRadios } from './radio'
+import { fillCheckboxes } from './checkbox'
 
 async function run() {
   const profile = await getProfile()
@@ -16,6 +17,7 @@ async function run() {
   }
 
   filled += fillRadios(profile)
+  filled += fillCheckboxes(profile)
 
   chrome.runtime.sendMessage({ type: 'fillResult', filled, total: fields.length })
 }

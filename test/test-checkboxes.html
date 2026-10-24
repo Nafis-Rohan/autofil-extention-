@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Checkboxes</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 480px;
+        margin: 24px auto;
+      }
+      label {
+        display: block;
+        margin: 8px 0;
+        font-size: 14px;
+      }
+      fieldset {
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Checkbox test</h2>
+    <form>
+      <fieldset>
+        <legend>Job Type</legend>
+        <label
+          ><input type="checkbox" name="job_type" value="ft" /> Full-time</label
+        >
+        <label
+          ><input type="checkbox" name="job_type" value="pt" /> Part-time</label
+        >
+        <label
+          ><input type="checkbox" name="job_type" value="in" />
+          Internship</label
+        >
+      </fieldset>
+
+      <fieldset>
+        <legend>Other</legend>
+        <label
+          ><input type="checkbox" name="relocate" /> I am willing to
+          relocate</label
+        >
+        <label
+          ><input type="checkbox" name="sponsor_yes" /> I will require visa
+          sponsorship</label
+        >
+        <label
+          ><input type="checkbox" name="sponsor_no" /> I do not require visa
+          sponsorship</label
+        >
+        <label
+          ><input type="checkbox" name="terms" /> I agree to the Terms and
+          Privacy Policy</label
+        >
+        <label
+          ><input type="checkbox" name="accurate" /> I confirm the information
+          is accurate</label
+        >
+        <label
+          ><input type="checkbox" name="alerts" /> Send me job alerts</label
+        >
+      </fieldset>
+    </form>
+  </body>
+</html>
