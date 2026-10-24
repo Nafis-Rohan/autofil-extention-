@@ -4,6 +4,7 @@ export type FieldKey =
   | 'city' | 'address' | 'postalCode' | 'country'
   | 'university' | 'degree' | 'major' | 'cgpa'
   | 'currentCompany' | 'currentTitle'
+  | 'gender' | 'nationality' | 'workMode' | 'jobType'
 
 // Order matters: more specific keys come first.
 export const KEYWORDS: Record<FieldKey, string[]> = {
@@ -26,6 +27,10 @@ export const KEYWORDS: Record<FieldKey, string[]> = {
   cgpa: ['cgpa', 'gpa', 'grade point'],
   currentCompany: ['current company', 'current employer', 'employer', 'company name'],
   currentTitle: ['current title', 'job title', 'current position', 'designation'],
+  gender: ['gender'],
+  nationality: ['nationality', 'citizenship'],
+  workMode: ['work mode', 'work arrangement', 'work preference', 'work type'],
+  jobType: ['job type', 'employment type', 'type of employment'],
 }
 
 export function matchKey(hint: string): FieldKey | null {

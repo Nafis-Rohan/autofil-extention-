@@ -15,7 +15,8 @@
         font-size: 13px;
       }
       input,
-      textarea {
+      textarea,
+      select {
         width: 100%;
         padding: 6px;
         box-sizing: border-box;
@@ -51,6 +52,30 @@
 
       <label for="cgpa">CGPA</label>
       <input id="cgpa" name="cgpa" />
+
+      <label for="country">Country</label>
+      <select id="country" name="country">
+        <option value="">Select...</option>
+        <option>India</option>
+        <option>Bangladesh</option>
+        <option>Pakistan</option>
+      </select>
+
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender">
+        <option value="">Select...</option>
+        <option>Female</option>
+        <option>Male</option>
+        <option>Prefer not to say</option>
+      </select>
+
+      <label for="wm">Work Mode</label>
+      <select id="wm" name="work_mode">
+        <option value="">Select...</option>
+        <option>On-site</option>
+        <option>Remote (Work from home)</option>
+        <option>Hybrid</option>
+      </select>
 
       <label for="cl">Cover Letter</label>
       <textarea id="cl" name="cover_letter" rows="5"></textarea>
