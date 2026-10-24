@@ -5,9 +5,12 @@ export type FieldKey =
   | 'university' | 'degree' | 'major' | 'cgpa'
   | 'currentCompany' | 'currentTitle'
   | 'gender' | 'nationality' | 'workMode' | 'jobType'
+  | 'relocate' | 'sponsorship'
 
 // Order matters: more specific keys come first.
 export const KEYWORDS: Record<FieldKey, string[]> = {
+  relocate: ['relocate', 'relocation'],
+  sponsorship: ['sponsorship', 'sponsor'],
   firstName: ['first name', 'firstname', 'first_name', 'given name', 'fname'],
   lastName: ['last name', 'lastname', 'last_name', 'surname', 'family name', 'lname'],
   fullName: ['full name', 'fullname', 'your name', 'candidate name'],
@@ -43,7 +46,7 @@ export function matchKey(hint: string): FieldKey | null {
 
 export type FillableEl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 
-function getLabelText(el: FillableEl): string {
+export function getLabelText(el: FillableEl): string {
   // 1. <label for="id">
   if (el.id) {
     const byFor = document.querySelector(`label[for="${CSS.escape(el.id)}"]`)

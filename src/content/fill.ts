@@ -36,12 +36,14 @@ export function valueFor(key: FieldKey, p: Profile): string {
     case 'nationality': return p.personal.nationality
     case 'workMode': return p.preferences.workMode
     case 'jobType': return p.preferences.jobType
+    case 'relocate': return p.preferences.willingToRelocate ? 'Yes' : 'No'
+    case 'sponsorship': return p.preferences.needSponsorship ? 'Yes' : 'No'
   }
 }
 
 // Returns true if the field was filled.
 export function fillText(el: FillableEl, key: FieldKey, profile: Profile): boolean {
-  if (el instanceof HTMLSelectElement) return false // selects come in Phase 5
+  if (el instanceof HTMLSelectElement) return false // selects are handled by fillSelect
   if (el instanceof HTMLInputElement && ['checkbox', 'radio'].includes(el.type)) return false
   if (el.value.trim() !== '') return false // never overwrite what's already there
 
@@ -52,7 +54,7 @@ export function fillText(el: FillableEl, key: FieldKey, profile: Profile): boole
   return true
 }
 
-function tokens(s: string): string[] {
+export function tokens(s: string): string[] {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(' ').filter(Boolean)
 }
 

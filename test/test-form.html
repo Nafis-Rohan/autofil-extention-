@@ -21,6 +21,16 @@
         padding: 6px;
         box-sizing: border-box;
       }
+      input[type="radio"] {
+        width: auto;
+      }
+      fieldset {
+        margin-top: 12px;
+      }
+      fieldset label {
+        display: inline-block;
+        margin-right: 12px;
+      }
     </style>
   </head>
   <body>
@@ -76,6 +86,34 @@
         <option>Remote (Work from home)</option>
         <option>Hybrid</option>
       </select>
+
+      <fieldset>
+        <legend>Are you willing to relocate?</legend>
+        <label><input type="radio" name="relocate" value="y" /> Yes</label>
+        <label><input type="radio" name="relocate" value="n" /> No</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Do you require visa sponsorship?</legend>
+        <label><input type="radio" name="sponsor" value="y" /> Yes</label>
+        <label><input type="radio" name="sponsor" value="n" /> No</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Job Type</legend>
+        <label
+          ><input type="radio" name="job_type" value="ft" /> Full-time</label
+        >
+        <label
+          ><input type="radio" name="job_type" value="pt" /> Part-time</label
+        >
+        <label
+          ><input type="radio" name="job_type" value="in" /> Internship</label
+        >
+        <label
+          ><input type="radio" name="job_type" value="ct" /> Contract</label
+        >
+      </fieldset>
 
       <label for="cl">Cover Letter</label>
       <textarea id="cl" name="cover_letter" rows="5"></textarea>

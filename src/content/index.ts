@@ -1,6 +1,7 @@
 import { getProfile } from '../storage'
 import { getFields, getHint, matchKey } from './detect'
 import { fillText, fillSelect } from './fill'
+import { fillRadios } from './radio'
 
 async function run() {
   const profile = await getProfile()
@@ -13,6 +14,8 @@ async function run() {
     const ok = el instanceof HTMLSelectElement ? fillSelect(el, key, profile) : fillText(el, key, profile)
     if (ok) filled++
   }
+
+  filled += fillRadios(profile)
 
   chrome.runtime.sendMessage({ type: 'fillResult', filled, total: fields.length })
 }
