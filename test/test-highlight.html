@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Highlights</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 480px;
+        margin: 24px auto;
+      }
+      label {
+        display: block;
+        margin: 10px 0 2px;
+        font-size: 13px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+      input[type="radio"] {
+        width: auto;
+      }
+      fieldset {
+        margin-top: 12px;
+      }
+      fieldset label {
+        display: inline-block;
+        margin-right: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Highlight test</h2>
+    <form>
+      <label for="fn">First Name</label>
+      <input id="fn" name="first_name" />
+
+      <label for="em">Email Address</label>
+      <input id="em" name="email" type="email" />
+
+      <label for="pc">Postal Code</label>
+      <input id="pc" name="postal_code" />
+
+      <label for="country">Country</label>
+      <select id="country" name="country">
+        <option value="">Select...</option>
+        <option>India</option>
+        <option>Bangladesh</option>
+      </select>
+
+      <fieldset>
+        <legend>Are you willing to relocate?</legend>
+        <label><input type="radio" name="relocate" value="y" /> Yes</label>
+        <label><input type="radio" name="relocate" value="n" /> No</label>
+      </fieldset>
+
+      <label for="lang">Favorite Programming Language (required)</label>
+      <input id="lang" name="fav_lang" required />
+
+      <label for="nick">Nickname (optional)</label>
+      <input id="nick" name="nickname" />
+    </form>
+  </body>
+</html>

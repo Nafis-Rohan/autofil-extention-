@@ -15,7 +15,8 @@ function groupQuestion(first: HTMLInputElement): string {
   return first.closest('div')?.previousElementSibling?.textContent ?? ''
 }
 
-export function fillRadios(profile: Profile): number {
+// Returns the radio buttons that were picked.
+export function fillRadios(profile: Profile): HTMLInputElement[] {
   const radios = Array.from(
     document.querySelectorAll<HTMLInputElement>('input[type="radio"]'),
   ).filter((r) => !r.disabled && r.offsetParent !== null)
@@ -26,7 +27,7 @@ export function fillRadios(profile: Profile): number {
     groups.set(r.name, [...(groups.get(r.name) ?? []), r])
   }
 
-  let filled = 0
+  const picked: HTMLInputElement[] = []
   for (const [name, list] of groups) {
     if (list.some((r) => r.checked)) continue // already answered
 
@@ -44,7 +45,7 @@ export function fillRadios(profile: Profile): number {
     if (!pick) continue
 
     pick.click() // click() fires the right events, so React forms update too
-    filled++
+    picked.push(pick)
   }
-  return filled
+  return picked
 }

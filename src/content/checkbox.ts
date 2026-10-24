@@ -16,12 +16,13 @@ function legendOf(el: HTMLInputElement): string {
   return el.closest('fieldset')?.querySelector('legend')?.textContent ?? ''
 }
 
-export function fillCheckboxes(profile: Profile): number {
+// Returns the checkboxes that were ticked.
+export function fillCheckboxes(profile: Profile): HTMLInputElement[] {
   const boxes = Array.from(
     document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'),
   ).filter((c) => !c.disabled && !c.checked && c.offsetParent !== null)
 
-  let filled = 0
+  const ticked: HTMLInputElement[] = []
   for (const cb of boxes) {
     const own = getLabelText(cb) || cb.value
     const hint = `${legendOf(cb)} ${own} ${cb.name} ${cb.id}`.replace(/[_-]/g, ' ').toLowerCase()
@@ -47,7 +48,7 @@ export function fillCheckboxes(profile: Profile): number {
     if (!shouldTick) continue
 
     cb.click() // click() fires the right events, so React forms update too
-    filled++
+    ticked.push(cb)
   }
-  return filled
+  return ticked
 }
