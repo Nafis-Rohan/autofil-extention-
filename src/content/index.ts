@@ -1,4 +1,4 @@
-import { getProfile, getSnippets } from '../storage'
+import { getProfile, getSkills, getSnippets } from '../storage'
 import { getFields, getHint, matchKey } from './detect'
 import type { FillableEl } from './detect'
 import { fillText, fillSelect } from './fill'
@@ -7,6 +7,7 @@ import { fillCheckboxes } from './checkbox'
 import { clearMarks, mark } from './highlight'
 import { findLongTextFields, suggestCategory } from './longtext'
 import { addPicker, removePickers } from './picker'
+import { applySkillRules } from './rules'
 
 function isEmpty(el: FillableEl): boolean {
   if (el instanceof HTMLSelectElement) return el.value === '' || el.selectedIndex === 0
@@ -17,6 +18,7 @@ async function run() {
   clearMarks()
   removePickers()
   const profile = await getProfile()
+  const skills = await getSkills()
   const snippets = await getSnippets()
   const fields = getFields()
 
@@ -26,13 +28,15 @@ async function run() {
   )
   const longEls = new Set<Element>(longFields.map((f) => f.el))
 
-  let filled = 0
-  let red = 0
+  // "X+ years of Y?" questions are answered from your skills list.
+  const rules = applySkillRules(skills)
+  let filled = rules.filled
+  let red = rules.red
 
   for (const el of fields) {
     // radios and checkboxes are handled separately below
     if (el instanceof HTMLInputElement && ['radio', 'checkbox'].includes(el.type)) continue
-    if (longEls.has(el)) continue
+    if (longEls.has(el) || rules.handled.has(el)) continue
 
     const key = matchKey(getHint(el))
     const isSelect = el instanceof HTMLSelectElement
@@ -47,7 +51,7 @@ async function run() {
     }
   }
 
-  for (const r of fillRadios(profile)) {
+  for (const r of fillRadios(profile, rules.radioGroups)) {
     filled++
     mark(r, 'yellow')
   }

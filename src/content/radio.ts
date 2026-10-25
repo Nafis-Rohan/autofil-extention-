@@ -2,7 +2,7 @@ import type { Profile } from '../types'
 import { getLabelText, matchKey } from './detect'
 import { valueFor, tokens } from './fill'
 
-function groupQuestion(first: HTMLInputElement): string {
+export function groupQuestion(first: HTMLInputElement): string {
   const legend = first.closest('fieldset')?.querySelector('legend')?.textContent
   if (legend) return legend
   const group = first.closest('[role="radiogroup"]')
@@ -15,8 +15,8 @@ function groupQuestion(first: HTMLInputElement): string {
   return first.closest('div')?.previousElementSibling?.textContent ?? ''
 }
 
-// Returns the radio buttons that were picked.
-export function fillRadios(profile: Profile): HTMLInputElement[] {
+// Returns the radio buttons that were picked. Groups named in `skip` are left alone.
+export function fillRadios(profile: Profile, skip: Set<string> = new Set()): HTMLInputElement[] {
   const radios = Array.from(
     document.querySelectorAll<HTMLInputElement>('input[type="radio"]'),
   ).filter((r) => !r.disabled && r.offsetParent !== null)
@@ -29,6 +29,7 @@ export function fillRadios(profile: Profile): HTMLInputElement[] {
 
   const picked: HTMLInputElement[] = []
   for (const [name, list] of groups) {
+    if (skip.has(name)) continue
     if (list.some((r) => r.checked)) continue // already answered
 
     const key = matchKey(`${groupQuestion(list[0])} ${name}`.replace(/[_-]/g, ' '))
