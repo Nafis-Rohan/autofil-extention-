@@ -1,10 +1,12 @@
-import { getProfile } from '../storage'
+import { getProfile, getSnippets } from '../storage'
 import { getFields, getHint, matchKey } from './detect'
 import type { FillableEl } from './detect'
 import { fillText, fillSelect } from './fill'
 import { fillRadios } from './radio'
 import { fillCheckboxes } from './checkbox'
 import { clearMarks, mark } from './highlight'
+import { findLongTextFields, suggestCategory } from './longtext'
+import { addPicker, removePickers } from './picker'
 
 function isEmpty(el: FillableEl): boolean {
   if (el instanceof HTMLSelectElement) return el.value === '' || el.selectedIndex === 0
@@ -13,14 +15,24 @@ function isEmpty(el: FillableEl): boolean {
 
 async function run() {
   clearMarks()
+  removePickers()
   const profile = await getProfile()
+  const snippets = await getSnippets()
   const fields = getFields()
+
+  // Long-text fields get a snippet picker instead of keyword filling.
+  const longFields = findLongTextFields().filter(
+    ({ hint }) => suggestCategory(hint) !== null || matchKey(hint) === null,
+  )
+  const longEls = new Set<Element>(longFields.map((f) => f.el))
+
   let filled = 0
   let red = 0
 
   for (const el of fields) {
     // radios and checkboxes are handled separately below
     if (el instanceof HTMLInputElement && ['radio', 'checkbox'].includes(el.type)) continue
+    if (longEls.has(el)) continue
 
     const key = matchKey(getHint(el))
     const isSelect = el instanceof HTMLSelectElement
@@ -42,6 +54,10 @@ async function run() {
   for (const c of fillCheckboxes(profile)) {
     filled++
     mark(c, 'yellow')
+  }
+
+  for (const { el, hint } of longFields) {
+    addPicker(el, suggestCategory(hint) ?? 'custom', snippets, profile)
   }
 
   chrome.runtime.sendMessage({ type: 'fillResult', filled, total: fields.length, red })

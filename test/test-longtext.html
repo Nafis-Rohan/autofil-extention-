@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Backend Engineer at Acme Corp</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 560px;
+        margin: 40px auto;
+      }
+      label {
+        display: block;
+        margin: 28px 0 4px;
+        font-size: 13px;
+      }
+      textarea {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Backend Engineer</h1>
+    <form>
+      <label for="cl">Cover Letter</label>
+      <textarea id="cl" name="cover_letter" rows="5"></textarea>
+
+      <label for="ab">Tell us about yourself</label>
+      <textarea id="ab" rows="4"></textarea>
+
+      <label for="bug">Describe a difficult bug you fixed</label>
+      <textarea id="bug" rows="4"></textarea>
+
+      <label for="pr">Tell us about a project you are proud of</label>
+      <textarea id="pr" rows="4"></textarea>
+
+      <label for="why">Why do you want to work at Acme Corp?</label>
+      <textarea id="why" rows="4"></textarea>
+
+      <label for="more">Additional information</label>
+      <textarea id="more" rows="4"></textarea>
+
+      <label for="note">Short note (too small, should get no button)</label>
+      <textarea id="note" rows="1"></textarea>
+
+      <label id="ce-l">Cover letter (rich editor)</label>
+      <div
+        contenteditable="true"
+        aria-labelledby="ce-l"
+        style="border: 1px solid #999; min-height: 90px; padding: 6px"
+      ></div>
+    </form>
+  </body>
+</html>
