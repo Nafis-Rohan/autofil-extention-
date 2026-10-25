@@ -1,4 +1,5 @@
 import { getProfile, saveProfile, getSkills, saveSkills, getSnippets, saveSnippets } from '../storage'
+import type { Snippet, SnippetCategory, SnippetVariant } from '../types'
 
 type Field = HTMLInputElement | HTMLSelectElement
 
@@ -77,6 +78,119 @@ async function loadSkills() {
   renderSkills()
 }
 
+// ---- Snippets ----
+const CATEGORY_LABELS: Record<SnippetCategory, string> = {
+  coverLetter: 'Cover letter',
+  selfIntro: 'Self introduction',
+  biggestBugFixed: 'Biggest bug I fixed',
+  bestProject: 'Best project',
+  whyThisCompany: 'Why this company',
+  custom: 'Custom',
+}
+
+const VARIANT_LABELS: Record<SnippetVariant, string> = {
+  springBoot: 'Spring Boot',
+  django: 'Django',
+  ai: 'AI',
+  generic: 'Generic',
+}
+
+let snippets: Snippet[] = []
+let editingId: string | null = null
+
+const snipList = document.getElementById('snippet-list')!
+const snipHeading = document.getElementById('snip-heading')!
+const snipCategory = document.getElementById('snip-category') as HTMLSelectElement
+const snipVariant = document.getElementById('snip-variant') as HTMLSelectElement
+const snipTitle = document.getElementById('snip-title') as HTMLInputElement
+const snipText = document.getElementById('snip-text') as HTMLTextAreaElement
+const snipSave = document.getElementById('snip-save')!
+const snipCancel = document.getElementById('snip-cancel')!
+const snipStatus = document.getElementById('snip-status')!
+
+for (const [value, label] of Object.entries(CATEGORY_LABELS)) {
+  snipCategory.add(new Option(label, value))
+}
+for (const [value, label] of Object.entries(VARIANT_LABELS)) {
+  snipVariant.add(new Option(label, value))
+}
+
+function resetSnippetForm() {
+  editingId = null
+  snipHeading.textContent = 'Add snippet'
+  snipTitle.value = ''
+  snipText.value = ''
+  snipCancel.hidden = true
+}
+
+function renderSnippets() {
+  snipList.innerHTML = ''
+  if (snippets.length === 0) {
+    snipList.textContent = 'No snippets yet.'
+    return
+  }
+  snippets.forEach((s) => {
+    const row = document.createElement('div')
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin:6px 0'
+    row.innerHTML =
+      '<span style="flex:1"><b></b><br /><small></small></span>' +
+      '<button type="button" style="margin:0">Edit</button>' +
+      '<button type="button" style="margin:0">Delete</button>'
+    row.querySelector('b')!.textContent = s.title
+    row.querySelector('small')!.textContent =
+      `${CATEGORY_LABELS[s.category]} · ${VARIANT_LABELS[s.variant]}`
+
+    const [editBtn, deleteBtn] = Array.from(row.querySelectorAll('button'))
+    editBtn.addEventListener('click', () => {
+      editingId = s.id
+      snipHeading.textContent = 'Edit snippet'
+      snipCategory.value = s.category
+      snipVariant.value = s.variant
+      snipTitle.value = s.title
+      snipText.value = s.text
+      snipCancel.hidden = false
+      snipText.focus()
+    })
+    deleteBtn.addEventListener('click', async () => {
+      if (!confirm(`Delete "${s.title}"?`)) return
+      snippets = snippets.filter((x) => x.id !== s.id)
+      await saveSnippets(snippets)
+      if (editingId === s.id) resetSnippetForm()
+      renderSnippets()
+    })
+    snipList.appendChild(row)
+  })
+}
+
+snipSave.addEventListener('click', async () => {
+  const text = snipText.value.trim()
+  if (!text) {
+    snipStatus.textContent = 'Write the text first'
+    return
+  }
+  const category = snipCategory.value as SnippetCategory
+  const variant = snipVariant.value as SnippetVariant
+  const title = snipTitle.value.trim() || `${CATEGORY_LABELS[category]} - ${VARIANT_LABELS[variant]}`
+
+  if (editingId) {
+    snippets = snippets.map((s) => (s.id === editingId ? { ...s, category, variant, title, text } : s))
+  } else {
+    snippets.push({ id: crypto.randomUUID(), category, variant, title, text })
+  }
+  await saveSnippets(snippets)
+  resetSnippetForm()
+  renderSnippets()
+  snipStatus.textContent = 'Snippet saved ✅'
+  setTimeout(() => (snipStatus.textContent = ''), 2000)
+})
+
+snipCancel.addEventListener('click', resetSnippetForm)
+
+async function loadSnippets() {
+  snippets = await getSnippets()
+  renderSnippets()
+}
+
 // ---- Backup ----
 document.getElementById('export')!.addEventListener('click', async () => {
   const data = {
@@ -107,6 +221,8 @@ importFile.addEventListener('change', async () => {
     await saveSnippets(data.snippets ?? [])
     await load()
     await loadSkills()
+    await loadSnippets()
+    resetSnippetForm()
     status.textContent = 'Imported ✅'
   } catch {
     status.textContent = 'Invalid file ❌'
@@ -116,3 +232,4 @@ importFile.addEventListener('change', async () => {
 
 load()
 loadSkills()
+loadSnippets()

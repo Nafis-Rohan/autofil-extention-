@@ -15,10 +15,12 @@
         font-size: 13px;
       }
       input,
-      select {
+      select,
+      textarea {
         width: 100%;
         padding: 6px;
         box-sizing: border-box;
+        font-family: inherit;
       }
       input[type="checkbox"] {
         width: auto;
@@ -127,6 +129,28 @@
 
     <button id="save">Save</button>
     <span id="status"></span>
+
+    <h2>Snippets (long answers)</h2>
+    <p style="font-size: 12px; color: #666">
+      Cover letter, self intro, biggest bug, best project... Placeholders:
+      <code>{{company}}</code> <code>{{role}}</code> <code>{{name}}</code>.
+      Snippets save immediately with their own button.
+    </p>
+    <div id="snippet-list"></div>
+
+    <h3 id="snip-heading">Add snippet</h3>
+    <label>Category</label>
+    <select id="snip-category"></select>
+    <label>Variant</label>
+    <select id="snip-variant"></select>
+    <label>Title (optional)</label>
+    <input id="snip-title" placeholder="e.g. Cover letter - Spring Boot" />
+    <label>Text</label>
+    <textarea id="snip-text" rows="10"></textarea>
+    <button id="snip-save" type="button">Save snippet</button>
+    <button id="snip-cancel" type="button" hidden>Cancel edit</button>
+    <span id="snip-status"></span>
+
     <h2>Backup</h2>
     <button id="export" type="button">Export JSON</button>
     <button id="import" type="button">Import JSON</button>
