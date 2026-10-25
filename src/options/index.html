@@ -151,6 +151,22 @@
     <button id="snip-cancel" type="button" hidden>Cancel edit</button>
     <span id="snip-status"></span>
 
+    <h2>My answers (rules)</h2>
+    <p style="font-size: 12px; color: #666">
+      When a question contains the phrase on the left, the answer on the right
+      is filled in. Short phrases work best, e.g. <code>notice period</code>.
+      Rules fill text boxes, dropdowns and radio buttons only, never checkboxes.
+      They save immediately. You can also create rules from the page with the 💾
+      Remember button on red fields.
+    </p>
+    <div id="rule-list"></div>
+    <label>When the question contains</label>
+    <input id="rule-match" placeholder="e.g. comfortable working on site" />
+    <label>Answer</label>
+    <input id="rule-answer" placeholder="e.g. Yes" />
+    <button id="rule-add" type="button">Add rule</button>
+    <span id="rule-status"></span>
+
     <h2>Backup</h2>
     <button id="export" type="button">Export JSON</button>
     <button id="import" type="button">Import JSON</button>

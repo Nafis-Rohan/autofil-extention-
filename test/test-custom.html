@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Custom Rules</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 520px;
+        margin: 40px auto;
+      }
+      label {
+        display: block;
+        margin: 24px 0 2px;
+        font-size: 13px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+      input[type="radio"] {
+        width: auto;
+      }
+      fieldset {
+        margin-top: 24px;
+      }
+      fieldset label {
+        display: inline-block;
+        margin: 0 12px 0 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Custom rules test</h2>
+    <form>
+      <label for="onsite">Are you comfortable working on-site?</label>
+      <select id="onsite" name="onsite">
+        <option value="">Select...</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+
+      <fieldset>
+        <legend>Are you legally authorized to work in this country?</legend>
+        <label><input type="radio" name="auth" /> Yes</label>
+        <label><input type="radio" name="auth" /> No</label>
+      </fieldset>
+
+      <label for="sal">Expected Salary (BDT)</label>
+      <input id="sal" name="salary" />
+
+      <label for="lang">Favorite Programming Language (required)</label>
+      <input id="lang" name="fav_lang" required />
+    </form>
+  </body>
+</html>

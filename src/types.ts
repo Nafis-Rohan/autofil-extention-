@@ -66,3 +66,10 @@ export interface Snippet {
   title: string
   text: string // may contain {{company}}, {{role}}, {{name}}
 }
+
+// "When a question contains `match`, answer `answer`."
+export interface Rule {
+  id: string
+  match: string
+  answer: string
+}

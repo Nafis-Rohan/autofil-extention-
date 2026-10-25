@@ -1,5 +1,8 @@
-import { getProfile, saveProfile, getSkills, saveSkills, getSnippets, saveSnippets } from '../storage'
-import type { Snippet, SnippetCategory, SnippetVariant } from '../types'
+import {
+  getProfile, saveProfile, getSkills, saveSkills,
+  getSnippets, saveSnippets, getRules, saveRules,
+} from '../storage'
+import type { Rule, Snippet, SnippetCategory, SnippetVariant } from '../types'
 
 type Field = HTMLInputElement | HTMLSelectElement
 
@@ -191,12 +194,66 @@ async function loadSnippets() {
   renderSnippets()
 }
 
+// ---- Rules ----
+let rules: Rule[] = []
+
+const ruleList = document.getElementById('rule-list')!
+const ruleMatch = document.getElementById('rule-match') as HTMLInputElement
+const ruleAnswer = document.getElementById('rule-answer') as HTMLInputElement
+const ruleStatus = document.getElementById('rule-status')!
+
+const normKey = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+
+function renderRules() {
+  ruleList.innerHTML = ''
+  if (rules.length === 0) {
+    ruleList.textContent = 'No rules yet.'
+    return
+  }
+  rules.forEach((r) => {
+    const row = document.createElement('div')
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin:6px 0'
+    row.innerHTML = '<span style="flex:1"></span><button type="button" style="margin:0">Delete</button>'
+    row.querySelector('span')!.textContent = `"${r.match}" → ${r.answer}`
+    row.querySelector('button')!.addEventListener('click', async () => {
+      rules = rules.filter((x) => x.id !== r.id)
+      await saveRules(rules)
+      renderRules()
+    })
+    ruleList.appendChild(row)
+  })
+}
+
+document.getElementById('rule-add')!.addEventListener('click', async () => {
+  const match = ruleMatch.value.trim()
+  const answer = ruleAnswer.value.trim()
+  if (!normKey(match) || !answer) {
+    ruleStatus.textContent = 'Fill both boxes'
+    return
+  }
+  // same phrase = replace the old rule
+  rules = rules.filter((r) => normKey(r.match) !== normKey(match))
+  rules.push({ id: crypto.randomUUID(), match, answer })
+  await saveRules(rules)
+  ruleMatch.value = ''
+  ruleAnswer.value = ''
+  renderRules()
+  ruleStatus.textContent = 'Rule saved ✅'
+  setTimeout(() => (ruleStatus.textContent = ''), 2000)
+})
+
+async function loadRules() {
+  rules = await getRules()
+  renderRules()
+}
+
 // ---- Backup ----
 document.getElementById('export')!.addEventListener('click', async () => {
   const data = {
     profile: await getProfile(),
     skills: await getSkills(),
     snippets: await getSnippets(),
+    rules: await getRules(),
   }
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
@@ -219,9 +276,11 @@ importFile.addEventListener('change', async () => {
     await saveProfile(data.profile)
     await saveSkills(data.skills ?? {})
     await saveSnippets(data.snippets ?? [])
+    await saveRules(data.rules ?? [])
     await load()
     await loadSkills()
     await loadSnippets()
+    await loadRules()
     resetSnippetForm()
     status.textContent = 'Imported ✅'
   } catch {
@@ -233,3 +292,4 @@ importFile.addEventListener('change', async () => {
 load()
 loadSkills()
 loadSnippets()
+loadRules()

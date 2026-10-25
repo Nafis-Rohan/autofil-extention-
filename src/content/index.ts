@@ -1,4 +1,4 @@
-import { getProfile, getSkills, getSnippets } from '../storage'
+import { getProfile, getRules, getSkills, getSnippets } from '../storage'
 import { getFields, getHint, matchKey } from './detect'
 import type { FillableEl } from './detect'
 import { fillText, fillSelect } from './fill'
@@ -8,6 +8,8 @@ import { clearMarks, mark } from './highlight'
 import { findLongTextFields, suggestCategory } from './longtext'
 import { addPicker, removePickers } from './picker'
 import { applySkillRules } from './rules'
+import { applyCustomRules } from './custom'
+import { addRemember } from './remember'
 
 function isEmpty(el: FillableEl): boolean {
   if (el instanceof HTMLSelectElement) return el.value === '' || el.selectedIndex === 0
@@ -20,6 +22,7 @@ async function run() {
   const profile = await getProfile()
   const skills = await getSkills()
   const snippets = await getSnippets()
+  const rules = await getRules()
   const fields = getFields()
 
   // Long-text fields get a snippet picker instead of keyword filling.
@@ -28,15 +31,21 @@ async function run() {
   )
   const longEls = new Set<Element>(longFields.map((f) => f.el))
 
-  // "X+ years of Y?" questions are answered from your skills list.
-  const rules = applySkillRules(skills)
-  let filled = rules.filled
-  let red = rules.red
+  // 1. Your own rules go first, so they can override everything else.
+  const custom = applyCustomRules(rules, longEls)
+  // 2. "X+ years of Y?" questions are answered from your skills list.
+  const skillRules = applySkillRules(skills)
 
+  const handled = new Set<Element>([...custom.handled, ...skillRules.handled])
+  const radioSkip = new Set<string>([...custom.radioGroups, ...skillRules.radioGroups])
+  let filled = custom.filled + skillRules.filled
+  let red = skillRules.red
+
+  // 3. Everything else: keyword matching.
   for (const el of fields) {
     // radios and checkboxes are handled separately below
     if (el instanceof HTMLInputElement && ['radio', 'checkbox'].includes(el.type)) continue
-    if (longEls.has(el) || rules.handled.has(el)) continue
+    if (longEls.has(el) || handled.has(el)) continue
 
     const key = matchKey(getHint(el))
     const isSelect = el instanceof HTMLSelectElement
@@ -51,7 +60,7 @@ async function run() {
     }
   }
 
-  for (const r of fillRadios(profile, rules.radioGroups)) {
+  for (const r of fillRadios(profile, radioSkip)) {
     filled++
     mark(r, 'yellow')
   }
@@ -63,6 +72,9 @@ async function run() {
   for (const { el, hint } of longFields) {
     addPicker(el, suggestCategory(hint) ?? 'custom', snippets, profile)
   }
+
+  // Every red field gets a "Remember" button.
+  document.querySelectorAll<HTMLElement>('[data-ja-mark="red"]').forEach((el) => addRemember(el))
 
   chrome.runtime.sendMessage({ type: 'fillResult', filled, total: fields.length, red })
 }
