@@ -30,6 +30,7 @@ export function valueFor(key: FieldKey, p: Profile): string {
     case 'degree': return p.education.degree
     case 'major': return p.education.major
     case 'cgpa': return p.education.cgpa
+    case 'graduationYear': return p.education.graduationYear
     case 'currentCompany': return p.experience.currentCompany
     case 'currentTitle': return p.experience.currentTitle
     case 'gender': return p.personal.gender
@@ -38,6 +39,12 @@ export function valueFor(key: FieldKey, p: Profile): string {
     case 'jobType': return p.preferences.jobType
     case 'relocate': return p.preferences.willingToRelocate ? 'Yes' : 'No'
     case 'sponsorship': return p.preferences.needSponsorship ? 'Yes' : 'No'
+    case 'sscBoard': return p.education.ssc.board
+    case 'sscYear': return p.education.ssc.year
+    case 'sscGpa': return p.education.ssc.gpa
+    case 'hscBoard': return p.education.hsc.board
+    case 'hscYear': return p.education.hsc.year
+    case 'hscGpa': return p.education.hsc.gpa
   }
 }
 

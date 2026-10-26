@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Education Fields</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 640px;
+        margin: 24px auto;
+      }
+      label {
+        display: block;
+        margin: 12px 0 2px;
+        font-size: 13px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 6px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Education test</h2>
+
+    <h3>Layout 1: labelled fields</h3>
+    <form>
+      <label for="a1">SSC Board</label>
+      <select id="a1" name="ssc_board">
+        <option value="">Select...</option>
+        <option>Chittagong Board</option>
+        <option>Dhaka Board</option>
+        <option>Rajshahi Board</option>
+      </select>
+
+      <label for="a2">SSC Passing Year</label>
+      <input id="a2" name="ssc_year" />
+
+      <label for="a3">SSC GPA</label>
+      <input id="a3" name="ssc_gpa" />
+
+      <label for="b1">Higher Secondary (HSC) Board</label>
+      <select id="b1" name="hsc_board">
+        <option value="">Select...</option>
+        <option>Chittagong Board</option>
+        <option>Dhaka Board</option>
+        <option>Rajshahi Board</option>
+      </select>
+
+      <label for="b2">HSC Passing Year</label>
+      <input id="b2" name="hsc_year" />
+
+      <label for="b3">HSC Result</label>
+      <input id="b3" name="hsc_result" />
+
+      <label for="g1">Graduation Year</label>
+      <input id="g1" name="grad_year" />
+    </form>
+
+    <h3>Layout 2: table (inputs have no labels)</h3>
+    <table>
+      <tr>
+        <th>Exam</th>
+        <th>Board</th>
+        <th>Passing Year</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td>SSC</td>
+        <td><input name="r1c1" /></td>
+        <td><input name="r1c2" /></td>
+        <td><input name="r1c3" /></td>
+      </tr>
+      <tr>
+        <td>HSC</td>
+        <td><input name="r2c1" /></td>
+        <td><input name="r2c2" /></td>
+        <td><input name="r2c3" /></td>
+      </tr>
+    </table>
+  </body>
+</html>
