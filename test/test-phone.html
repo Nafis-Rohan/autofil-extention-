@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Phone Formats</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 480px;
+        margin: 24px auto;
+      }
+      label {
+        display: block;
+        margin: 14px 0 2px;
+        font-size: 13px;
+      }
+      input {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Phone format test</h2>
+    <form>
+      <label for="a">Mobile Number (plain)</label>
+      <input id="a" name="phone_a" />
+
+      <label for="b">Phone (international)</label>
+      <input id="b" name="phone_b" placeholder="+8801XXXXXXXXX" />
+
+      <label for="c">Contact Number (11 digits max)</label>
+      <input id="c" name="phone_c" maxlength="11" />
+
+      <label for="d">Phone Number (next to a country code box)</label>
+      <input id="d" name="phone_d" maxlength="10" />
+    </form>
+  </body>
+</html>

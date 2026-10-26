@@ -41,14 +41,38 @@ export function valueFor(key: FieldKey, p: Profile): string {
   }
 }
 
+// Reshapes a Bangladeshi mobile number to fit the field. Anything else is left as typed.
+export function formatPhone(raw: string, el: HTMLInputElement | HTMLTextAreaElement): string {
+  const digits = raw.replace(/\D/g, '')
+  let rest = digits
+  if (digits.startsWith('880')) rest = digits.slice(3)
+  else if (digits.startsWith('0')) rest = digits.slice(1)
+
+  // Not a BD mobile (10 digits starting with 1) -> keep exactly what the user saved
+  if (rest.length !== 10 || !rest.startsWith('1')) return raw
+
+  const placeholder = (el.getAttribute('placeholder') ?? '').replace(/\s/g, '')
+  const max = el instanceof HTMLInputElement ? el.maxLength : -1
+
+  if (placeholder.startsWith('+880')) return `+880${rest}`
+  if (placeholder.startsWith('880')) return `880${rest}`
+  if (placeholder.startsWith('01')) return `0${rest}`
+  if (max === 10) return rest // a separate +880 country box sits next to it
+  if (max === 11) return `0${rest}`
+  if (max === 13) return `880${rest}`
+  if (max === 14) return `+880${rest}`
+  return raw
+}
+
 // Returns true if the field was filled.
 export function fillText(el: FillableEl, key: FieldKey, profile: Profile): boolean {
   if (el instanceof HTMLSelectElement) return false // selects are handled by fillSelect
   if (el instanceof HTMLInputElement && ['checkbox', 'radio'].includes(el.type)) return false
   if (el.value.trim() !== '') return false // never overwrite what's already there
 
-  const value = valueFor(key, profile)
+  let value = valueFor(key, profile)
   if (!value) return false
+  if (key === 'phone') value = formatPhone(value, el)
 
   setValue(el, value)
   return true

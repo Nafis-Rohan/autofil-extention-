@@ -33,8 +33,8 @@ async function run() {
 
   // 1. Your own rules go first, so they can override everything else.
   const custom = applyCustomRules(rules, longEls)
-  // 2. "X+ years of Y?" questions are answered from your skills list.
-  const skillRules = applySkillRules(skills)
+  // 2. "X+ years of Y?" questions are answered from your skills list (or total experience).
+  const skillRules = applySkillRules(skills, profile.experience.totalYears)
 
   const handled = new Set<Element>([...custom.handled, ...skillRules.handled])
   const radioSkip = new Set<string>([...custom.radioGroups, ...skillRules.radioGroups])

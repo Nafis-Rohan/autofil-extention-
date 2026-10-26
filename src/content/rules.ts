@@ -34,6 +34,26 @@ function findSkill(q: string, skills: Skills): { name: string; years: number } |
   return { name: top[0], years: skills[top[0]] }
 }
 
+// Words that don't name a skill. If nothing else is left, the question is about total experience.
+const GENERIC = new Set([
+  'years', 'year', 'yrs', 'yr', 'experience', 'exp', 'of', 'in', 'with', 'total', 'overall',
+  'professional', 'relevant', 'work', 'working', 'how', 'many', 'much', 'do', 'you', 'have',
+  'your', 'the', 'a', 'an', 'number', 'required', 'minimum', 'min', 'at', 'least', 'or', 'more',
+  'and', 'is', 'are', 'what', 'this', 'role', 'field', 'industry', 'related', 'hands', 'on',
+  'full', 'time', 'prior', 'previous', 'for', 'to',
+])
+
+// `plain` is the visible label only (no field names or ids), so site-specific names can't confuse it.
+function generalExperience(plain: string, totalYears: string): { name: string; years: number } | null {
+  const all = tokens(plain)
+  if (all.length === 0) return null
+  const left = all.filter((t) => !GENERIC.has(t) && !/^\d+(\.\d+)?$/.test(t))
+  if (left.length > 0) return null
+  const years = parseFloat(totalYears)
+  if (!Number.isFinite(years)) return null
+  return { name: 'total experience', years }
+}
+
 // Does an option like "1-3 years", "5+", "Less than 1 year" or "2" fit this many years?
 function optionFits(text: string, y: number, strict: boolean): boolean {
   const t = text.toLowerCase().replace(/,/g, '')
@@ -80,7 +100,7 @@ export interface RuleResult {
   radioGroups: Set<string> // radio group names this step already dealt with
 }
 
-export function applySkillRules(skills: Skills): RuleResult {
+export function applySkillRules(skills: Skills, totalYears = ''): RuleResult {
   const handled = new Set<Element>()
   const radioGroups = new Set<string>()
   let filled = 0
@@ -93,7 +113,8 @@ export function applySkillRules(skills: Skills): RuleResult {
 
     const q = getHint(el)
     if (!isYearsQuestion(q)) continue
-    const skill = findSkill(q, skills)
+    const plain = getLabelText(el) || el.getAttribute('aria-label') || el.getAttribute('placeholder') || ''
+    const skill = findSkill(q, skills) ?? generalExperience(plain, totalYears)
     const need = requiredYears(q)
 
     if (el instanceof HTMLSelectElement) {
@@ -141,10 +162,11 @@ export function applySkillRules(skills: Skills): RuleResult {
 
   for (const [name, list] of groups) {
     if (list.some((r) => r.checked)) continue
-    const q = `${groupQuestion(list[0])} ${name}`.replace(/[_-]/g, ' ')
+    const plain = groupQuestion(list[0])
+    const q = `${plain} ${name}`.replace(/[_-]/g, ' ')
     if (!isYearsQuestion(q)) continue
 
-    const skill = findSkill(q, skills)
+    const skill = findSkill(q, skills) ?? generalExperience(plain, totalYears)
     const need = requiredYears(q)
     radioGroups.add(name)
 
