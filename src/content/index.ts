@@ -10,6 +10,7 @@ import { addPicker, removePickers } from './picker'
 import { applySkillRules } from './rules'
 import { applyCustomRules } from './custom'
 import { addRemember } from './remember'
+import { getPageInfo } from './pageInfo'
 
 function isEmpty(el: FillableEl): boolean {
   if (el instanceof HTMLSelectElement) return el.value === '' || el.selectedIndex === 0
@@ -76,7 +77,10 @@ async function run() {
   // Every red field gets a "Remember" button.
   document.querySelectorAll<HTMLElement>('[data-ja-mark="red"]').forEach((el) => addRemember(el))
 
-  chrome.runtime.sendMessage({ type: 'fillResult', filled, total: fields.length, red })
+  // Only the top page reports company/role/url, so the tracker gets one entry, not one per iframe.
+  const page = window === window.top ? { ...getPageInfo(), url: location.href } : undefined
+
+  chrome.runtime.sendMessage({ type: 'fillResult', filled, total: fields.length, red, page })
 }
 
 run()

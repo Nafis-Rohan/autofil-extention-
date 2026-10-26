@@ -1,4 +1,4 @@
-import type { Profile, Rule, Skills, Snippet } from './types'
+import type { Application, Profile, Rule, Skills, Snippet } from './types'
 
 export const emptyProfile: Profile = {
   personal: {
@@ -58,4 +58,13 @@ export async function getRules(): Promise<Rule[]> {
 
 export async function saveRules(rules: Rule[]): Promise<void> {
   await chrome.storage.local.set({ rules })
+}
+
+export async function getApplications(): Promise<Application[]> {
+  const { applications } = await chrome.storage.local.get('applications')
+  return (applications as Application[] | undefined) ?? []
+}
+
+export async function saveApplications(applications: Application[]): Promise<void> {
+  await chrome.storage.local.set({ applications })
 }

@@ -10,4 +10,14 @@ export default defineManifest({
     default_popup: 'src/popup/index.html',
   },
   options_page: 'src/options/index.html',
+  background: {
+    service_worker: 'src/background/index.ts',
+    type: 'module',
+  },
+  commands: {
+    'fill-page': {
+      suggested_key: { default: 'Alt+Shift+F' },
+      description: 'Fill this page',
+    },
+  },
 })

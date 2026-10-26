@@ -73,3 +73,15 @@ export interface Rule {
   match: string
   answer: string
 }
+
+export type ApplicationStatus = 'filled' | 'applied' | 'interview' | 'offer' | 'rejected'
+
+// One entry per job page you filled.
+export interface Application {
+  id: string
+  company: string
+  role: string
+  url: string
+  date: string // ISO timestamp of the last fill
+  status: ApplicationStatus
+}

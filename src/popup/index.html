@@ -4,10 +4,20 @@
     <meta charset="UTF-8" />
     <title>Job Autofill</title>
   </head>
-  <body style="width: 220px; font-family: sans-serif; padding: 12px">
-    <h3>Job Autofill</h3>
+  <body style="width: 240px; font-family: sans-serif; padding: 12px">
+    <h3 style="margin-top: 0">Job Autofill</h3>
     <button id="fill" style="width: 100%; padding: 8px">Fill this page</button>
-    <p id="status" style="font-size: 13px"></p>
+    <p id="status" style="font-size: 13px; min-height: 18px"></p>
+    <div style="font-size: 12px; line-height: 1.7">
+      <div>
+        <span style="color: #16a34a">■</span> Green: filled from your profile
+      </div>
+      <div>
+        <span style="color: #eab308">■</span> Yellow: filled by a rule, check it
+      </div>
+      <div><span style="color: #dc2626">■</span> Red: needs you</div>
+      <div style="margin-top: 6px; color: #666">Shortcut: Alt+Shift+F</div>
+    </div>
     <script type="module" src="./popup.ts"></script>
   </body>
 </html>
