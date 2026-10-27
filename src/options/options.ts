@@ -1,8 +1,11 @@
 import {
   getProfile, saveProfile, getSkills, saveSkills,
   getSnippets, saveSnippets, getRules, saveRules,
+  getApplications, saveApplications,
 } from '../storage'
-import type { Rule, Snippet, SnippetCategory, SnippetVariant } from '../types'
+import type {
+  Application, ApplicationStatus, Rule, Snippet, SnippetCategory, SnippetVariant,
+} from '../types'
 
 type Field = HTMLInputElement | HTMLSelectElement
 
@@ -247,6 +250,117 @@ async function loadRules() {
   renderRules()
 }
 
+// ---- Applications ----
+const STATUS_LABELS: Record<ApplicationStatus, string> = {
+  filled: 'Filled',
+  applied: 'Applied',
+  interview: 'Interview',
+  offer: 'Offer',
+  rejected: 'Rejected',
+}
+
+let applications: Application[] = []
+const appsList = document.getElementById('apps-list')!
+const appsCount = document.getElementById('apps-count')!
+
+// Always re-read before writing: the background worker adds entries while this page is open.
+async function updateApplication(id: string, patch: Partial<Application>) {
+  const all = await getApplications()
+  const target = all.find((a) => a.id === id)
+  if (!target) return
+  Object.assign(target, patch)
+  await saveApplications(all)
+  applications = all
+}
+
+function renderApplications() {
+  appsCount.textContent = String(applications.length)
+  appsList.replaceChildren()
+  if (applications.length === 0) {
+    appsList.textContent = 'Nothing yet. Fill a job page and it shows up here.'
+    return
+  }
+
+  for (const a of applications) {
+    const row = document.createElement('div')
+    row.style.cssText = 'border:1px solid #ddd;border-radius:6px;padding:8px;margin:8px 0'
+
+    const company = document.createElement('input')
+    company.value = a.company
+    company.placeholder = 'Company'
+    company.addEventListener('change', async () => {
+      const v = company.value.trim() || a.company
+      company.value = v
+      a.company = v
+      await updateApplication(a.id, { company: v })
+    })
+
+    const role = document.createElement('input')
+    role.value = a.role
+    role.placeholder = 'Role'
+    role.style.marginTop = '4px'
+    role.addEventListener('change', async () => {
+      const v = role.value.trim() || a.role
+      role.value = v
+      a.role = v
+      await updateApplication(a.id, { role: v })
+    })
+
+    const meta = document.createElement('div')
+    meta.style.cssText = 'font-size:12px;color:#666;margin:6px 0'
+    meta.append(`${new Date(a.date).toLocaleDateString()} · `)
+    if (/^(https?|file):/i.test(a.url)) {
+      const link = document.createElement('a')
+      link.href = a.url
+      link.textContent = 'Open page'
+      link.target = '_blank'
+      link.rel = 'noreferrer'
+      meta.append(link)
+    } else {
+      meta.append('no link')
+    }
+
+    const statusSel = document.createElement('select')
+    for (const [value, label] of Object.entries(STATUS_LABELS)) {
+      statusSel.add(new Option(label, value))
+    }
+    statusSel.value = a.status
+    statusSel.addEventListener('change', () => {
+      a.status = statusSel.value as ApplicationStatus
+      updateApplication(a.id, { status: a.status })
+    })
+
+    const del = document.createElement('button')
+    del.type = 'button'
+    del.textContent = 'Delete'
+    del.style.marginTop = '8px'
+    del.addEventListener('click', async () => {
+      const rest = (await getApplications()).filter((x) => x.id !== a.id)
+      await saveApplications(rest)
+      applications = rest
+      renderApplications()
+    })
+
+    row.append(company, role, meta, statusSel, del)
+    appsList.appendChild(row)
+  }
+}
+
+async function loadApplications() {
+  applications = await getApplications()
+  renderApplications()
+}
+
+// New entries from the background worker show up live. Plain edits keep the same ids, so
+// they don't redraw the list (which would steal focus from the box you're typing in).
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local' || !changes.applications) return
+  const next = (changes.applications.newValue as Application[] | undefined) ?? []
+  const same = next.length === applications.length && next.every((a, i) => a.id === applications[i].id)
+  applications = next
+  if (!same) renderApplications()
+})
+
 // ---- Backup ----
 document.getElementById('export')!.addEventListener('click', async () => {
   const data = {
@@ -254,6 +368,7 @@ document.getElementById('export')!.addEventListener('click', async () => {
     skills: await getSkills(),
     snippets: await getSnippets(),
     rules: await getRules(),
+    applications: await getApplications(),
   }
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
@@ -277,10 +392,12 @@ importFile.addEventListener('change', async () => {
     await saveSkills(data.skills ?? {})
     await saveSnippets(data.snippets ?? [])
     await saveRules(data.rules ?? [])
+    await saveApplications(data.applications ?? [])
     await load()
     await loadSkills()
     await loadSnippets()
     await loadRules()
+    await loadApplications()
     resetSnippetForm()
     status.textContent = 'Imported ✅'
   } catch {
@@ -293,3 +410,4 @@ load()
 loadSkills()
 loadSnippets()
 loadRules()
+loadApplications()

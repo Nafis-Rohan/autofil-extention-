@@ -33,3 +33,7 @@ document.getElementById('fill')!.addEventListener('click', async () => {
     console.error(e)
   }
 })
+
+document.getElementById('apps')!.addEventListener('click', () => {
+  chrome.runtime.openOptionsPage()
+})

@@ -32,6 +32,19 @@
     </style>
   </head>
   <body>
+    <details id="apps-box" style="margin-bottom: 16px">
+      <summary style="cursor: pointer; font-size: 18px; font-weight: bold">
+        Applications (<span id="apps-count">0</span>)
+      </summary>
+      <p style="font-size: 12px; color: #666">
+        Every page you fill is logged here, on this computer only. Company and
+        role are guesses from the page, so fix them if they're wrong. "Filled"
+        means the form was filled, not that you applied. Change the status
+        yourself.
+      </p>
+      <div id="apps-list"></div>
+    </details>
+
     <h2>Personal info</h2>
     <label>First name</label><input data-path="personal.firstName" />
     <label>Last name</label><input data-path="personal.lastName" />
